@@ -4,10 +4,9 @@ var Gato  = mongoose.model('Gato'); // cargamos el modelo
 // GET - Devolvemos todos los gatos
 exports.dameGatos = function(req, res) { // el método se llama dameGatos
     Gato.find(function(err, gatos) { // buscamos todo lo que exista en la tabla Gato, y lo guardamos en gatos
-        if(err) res.send(500, err.message); // si hay error devolvemos un 500 y el mensaje que nos devuelve
+        if(err) res.status(500).send(err.message); // si hay error devolvemos un 500 y el mensaje que nos devuelve
         	console.log('GET dameGatos');
-        	console.log(gatos);
-            if (gatos == '[]') { // comprobamos si devuelve vacio o no, (tiene que haber otra manera de hacerlo)
+            if (!gatos.length) { // comprobamos si devuelve vacio o no
             	res.status(200).send('No tenemos gatos :(');
         	} else {
         		res.status(200).jsonp(gatos); // devolvemos correcto(200) y los datos de gatos mediante jsonp
@@ -20,7 +19,11 @@ exports.dameGato = function(req, res) {
     console.log('GET dameGato');
     Gato.findById(req.params.id, function(err, gato) {
         if(err) return res.status(500).send(err.message);
-        res.status(200).jsonp(gato);
+        if (gato == null) {
+            res.status(200).send('No se ha encontrado ningún gato con el id: ' + req.params.id);
+        } else {
+            res.status(200).jsonp(gato);
+        }
     });
 };
 
@@ -73,9 +76,13 @@ exports.deleteGato = function(req, res) {
     console.log('DELETE deleteGato');
     console.log(req.params.id);
     Gato.findById(req.params.id, function(err, gato) { // buscamos el gato
-        gato.remove(function(err) { // borramos el gato
-            if(err) return res.status(500).send(err.message);
-            res.status(200).jsonp('Gato eliminado correctamente');
-        })
+        if (gato == null) {
+            res.status(200).jsonp('No existe un gato con el id: ' + req.params.id);
+        } else {
+            gato.remove(function(err) { // borramos el gato
+                if(err) return res.status(500).send(err.message);
+                res.status(200).jsonp('Gato borrado correctamente');
+            })
+        }
     });
 };
