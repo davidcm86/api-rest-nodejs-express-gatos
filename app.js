@@ -1,6 +1,6 @@
 var express = require("express"), // nos permite gesticionar todo lo relacionado con hhtp, se compenetra con nodejs
 	app = express(), // en app tendremos express para utilizarlo
-	bodyParser = require("body-parser"), // permite gestionar las peticiones que se reciben
+	bodyParser = require("body-parser"), // permite gestionar las peticiones que se reciben y dividir el request body
 	methodOverride = require("method-override"),
 	mongoose = require('mongoose'); // permite gestionar la bbdd en mongo
 
